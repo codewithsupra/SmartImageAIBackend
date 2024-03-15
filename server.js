@@ -16,21 +16,22 @@ app.use(express.json());
 // Updated knex configuration to use environment variables
 const db = knex({
     client: 'pg',
-    connection: process.env.DB_URL || {
+    connection: {
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      ssl: { rejectUnauthorized: false }
+      ssl:true,
     }
   });
+  
 app.get('/', (req, res) => { res.send('It is working!'); }); // Updated for security
 app.post('/signin', (req, res) => { signin.handleSignIn(req, res, db, bcrypt) });
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 app.get('/profile/:id', (req, res) => { profile.handleProfileGet(req, res, db) });
 app.put('/image', (req, res) => { image.handleImage(req, res, db) });
-app.post('/imageurl', (req, res) => { image.handleApiCall(req, res) });
+
 
 const PORT = process.env.PORT || 3001; // Use PORT from .env, default to 3001
 app.listen(PORT, () => {
